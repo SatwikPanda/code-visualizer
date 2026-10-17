@@ -302,9 +302,6 @@ export default function ExecutionNavigation({
             </button>
           )}
         </div>
-        <div className="history-retention">
-          Executions are kept for 24 hours.
-        </div>
       </aside>
     </>
   );

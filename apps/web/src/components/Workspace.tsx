@@ -576,7 +576,7 @@ export default function Workspace() {
         onRefresh={() => void loadHistory()}
       />
       <main className="workspace">
-        {info?.backend === "local" && (
+        {/* {info?.backend === "local" && (
           <div className="local-notice">
             <AlertTriangle size={15} />
             <span>
@@ -585,14 +585,14 @@ export default function Workspace() {
             </span>
             <span className="notice-end">localhost only</span>
           </div>
-        )}
+        )} */}
         <div className="workspace-toolbar">
           <div className="workspace-title">
-            <h1>Execution workspace</h1>
-            <span>
+            <h1>{entry?.className || "your program"}</h1>
+            {/* <span className="workspace-title-text">
               Java <span className="muted">/</span>{" "}
               {entry?.className || "your program"}
-            </span>
+            </span> */}
           </div>
           <div className="toolbar-actions">
             <button
@@ -1388,13 +1388,6 @@ export default function Workspace() {
             ))}
           </div>
         )}
-        <footer className="workspace-footer">
-          <span>
-            <span className="status-dot" />
-            Recorded execution. Playback never reruns your code.
-          </span>
-          <span>Java first. More languages to come.</span>
-        </footer>
         {inspected && (
           <aside className="value-inspector" aria-label="Variable inspector">
             <div className="panel-heading">

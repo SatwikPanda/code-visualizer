@@ -1,0 +1,43 @@
+{
+  "name": "code-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx scripts/dev.ts",
+    "dev:local": "tsx scripts/dev.ts --local",
+    "build": "npm run assets && next build apps/web --webpack",
+    "build:java": "node scripts/build-java.mjs",
+    "build:sandbox-images": "docker build -t codeviz-java:21 -f infra/java.Dockerfile .",
+    "assets": "node scripts/assets.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "start": "tsx scripts/dev.ts --production",
+    "start:local": "tsx scripts/dev.ts --production --local",
+    "test": "tsx --test tests/*.test.ts",
+    "test:integration": "npm run build:java && tsx --test tests/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p apps/web/tsconfig.json"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "4.7.0",
+    "@tanstack/react-virtual": "3.13.12",
+    "lucide-react": "0.468.0",
+    "monaco-editor": "0.52.2",
+    "next": "16.4.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.18.11",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "prettier": "3.6.2",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

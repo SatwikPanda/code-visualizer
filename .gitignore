@@ -1,0 +1,8 @@
+node_modules/
+.data/
+apps/web/.next/
+apps/web/public/monaco/
+*.tsbuildinfo
+.env
+test-results/
+playwright-report/

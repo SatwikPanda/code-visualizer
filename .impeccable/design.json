@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T13:27:54.576Z",
+  "title": "Design System: Code Visualizer",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Charcoal Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Charcoal Panel",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Raised Charcoal",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Structural Grey",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Reading Chalk",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Grey",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Control Chalk",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "Condition Green",
+        "tonalRamp": [
+          "oklch(15% 0.0938 157.92)",
+          "oklch(26% 0.0938 157.92)",
+          "oklch(38% 0.0938 157.92)",
+          "oklch(49% 0.0938 157.92)",
+          "oklch(61% 0.0938 157.92)",
+          "oklch(72% 0.0938 157.92)",
+          "oklch(84% 0.0938 157.92)",
+          "oklch(95% 0.0938 157.92)"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Change Amber",
+        "tonalRamp": [
+          "oklch(15% 0.0887 76.71)",
+          "oklch(26% 0.0887 76.71)",
+          "oklch(38% 0.0887 76.71)",
+          "oklch(49% 0.0887 76.71)",
+          "oklch(61% 0.0887 76.71)",
+          "oklch(72% 0.0887 76.71)",
+          "oklch(84% 0.0887 76.71)",
+          "oklch(95% 0.0887 76.71)"
+        ]
+      },
+      "error": {
+        "role": "secondary",
+        "displayName": "Error Coral",
+        "tonalRamp": [
+          "oklch(15% 0.0843 23.75)",
+          "oklch(26% 0.0843 23.75)",
+          "oklch(38% 0.0843 23.75)",
+          "oklch(49% 0.0843 23.75)",
+          "oklch(61% 0.0843 23.75)",
+          "oklch(72% 0.0843 23.75)",
+          "oklch(84% 0.0843 23.75)",
+          "oklch(95% 0.0843 23.75)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Language Rail Charcoal",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "history": {
+        "role": "neutral",
+        "displayName": "History Charcoal",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "navigation-line": {
+        "role": "neutral",
+        "displayName": "Navigation Grey",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Workspace headline",
+        "purpose": "The compact workspace title."
+      },
+      "body": {
+        "displayName": "Interface body",
+        "purpose": "System UI text and controls."
+      },
+      "label": {
+        "displayName": "Control label",
+        "purpose": "Buttons and panel labels."
+      },
+      "code": {
+        "displayName": "Java source",
+        "purpose": "Monaco source with a 22px line rhythm."
+      },
+      "value": {
+        "displayName": "Observed values",
+        "purpose": "Tabular values and measured state."
+      },
+      "field": {
+        "displayName": "Parameter entry",
+        "purpose": "Editable parameter values."
+      },
+      "result": {
+        "displayName": "Return value",
+        "purpose": "The completed method result."
+      },
+      "condition-inline": {
+        "displayName": "Inline condition",
+        "purpose": "Uppercase recorded source results, pending dash, and N/A."
+      },
+      "condition-pill": {
+        "displayName": "Table condition",
+        "purpose": "Lowercase result attached to an after-expression trace observation."
+      },
+      "condition-equation": {
+        "displayName": "Recorded substitution",
+        "purpose": "The condition expression with captured operand values."
+      },
+      "condition-operand": {
+        "displayName": "Recorded operand",
+        "purpose": "Individual captured operand/value pairs and skipped-path labels."
+      },
+      "rail-label": {
+        "displayName": "Language label",
+        "purpose": "Small label below the selected Java icon in the desktop rail."
+      },
+      "history-heading": {
+        "displayName": "Execution navigation heading",
+        "purpose": "The compact Executions sidebar heading."
+      }
+    },
+    "shadows": [
+      {
+        "name": "value-inspector",
+        "value": "0 12px 35px #0008",
+        "purpose": "The floating variable inspector only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-background",
+        "value": "background 0.15s",
+        "purpose": "Button hover states."
+      },
+      {
+        "name": "loading-spin",
+        "value": "spin 1s linear infinite",
+        "purpose": "Detection and execution loading indicators."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation-duration: 0.001ms !important; transition: none !important",
+        "purpose": "Applied under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-min",
+        "value": "1500px"
+      },
+      {
+        "name": "history-drawer-max",
+        "value": "1180px"
+      },
+      {
+        "name": "intermediate-max",
+        "value": "1100px"
+      },
+      {
+        "name": "panel-navigation-max",
+        "value": "900px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Run action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Start a real invocation after inputs are detected.",
+      "html": "<button class=\"ds-button ds-primary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"m6 3 14 9-14 9V3Z\"/></svg>Run &amp; visualize</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 13px;border-radius:7px;border:1px solid transparent;font:550 12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s}.ds-button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-button:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-primary{color:#202020;background:var(--accent,#e5e5e5)}.ds-primary:hover:not(:disabled){background:#ffffff}"
+    },
+    {
+      "name": "Detect inputs",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Analyze the current source before running.",
+      "html": "<button class=\"ds-button ds-secondary\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 7V4h3m10 0h3v3M4 17v3h3m10 0h3v-3M4 12h16\"/></svg>Detect inputs</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 13px;border-radius:7px;border:1px solid transparent;font:550 12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s}.ds-button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-button:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-secondary{background:var(--raised,#2c2c2c);border-color:#414141;color:var(--text,#ececec)}.ds-secondary:hover:not(:disabled){background:#363636}"
+    },
+    {
+      "name": "Subtle action",
+      "kind": "button",
+      "refersTo": "button-subtle",
+      "description": "Load the example without competing with the run action.",
+      "html": "<button class=\"ds-button ds-subtle\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M3 11a9 9 0 1 1 2.6 6.4M3 4v7h7\"/></svg>Load example</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 13px;border-radius:7px;border:1px solid transparent;font:550 12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s}.ds-button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-button:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-subtle{background:transparent;color:var(--secondary,#a7a7a7)}.ds-subtle:hover:not(:disabled){background:var(--raised,#2c2c2c);color:var(--text,#ececec)}"
+    },
+    {
+      "name": "Stop run",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Cancellation action visible while execution is running.",
+      "html": "<button class=\"ds-button ds-danger\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\"/></svg>Stop run</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 13px;border-radius:7px;border:1px solid transparent;font:550 12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s}.ds-button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-button:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-danger{background:#372422;color:var(--error,#e6a09b)}"
+    },
+    {
+      "name": "Parameter field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "A mono field for a detected Java parameter.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-target\">target <code>int</code></label><textarea class=\"ds-field\" id=\"ds-target\" rows=\"1\">9</textarea>",
+      "css": ".ds-field-label{display:flex;gap:8px;align-items:center;margin-bottom:7px;color:var(--text,#ececec);font:550 12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif}.ds-field-label code{color:var(--secondary,#a7a7a7);background:#303030;padding:1px 6px;border-radius:4px;font:10px Consolas, \"Cascadia Code\", monospace}.ds-field{display:block;max-width:100%;width:280px;min-height:38px;padding:9px 10px;border:1px solid #424242;border-radius:6px;background:#1b1b1b;color:var(--text,#ececec);caret-color:var(--accent,#e5e5e5);font:12px/20px Consolas, \"Cascadia Code\", monospace;resize:vertical}.ds-field:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-field:disabled{color:#858585;opacity:.65}"
+    },
+    {
+      "name": "Workspace navigation",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "Selected Java rail, grouped execution history, and compact workspace panel choices.",
+      "html": "<div class=\"ds-execution-preview\"><nav class=\"ds-language-rail\" aria-label=\"Languages\"><button class=\"ds-language-choice\" aria-label=\"Java\" aria-pressed=\"true\" title=\"Java · selected\"><svg width=\"25\" height=\"29\" viewBox=\"0 0 30 36\" fill=\"none\" aria-hidden=\"true\"><path d=\"M17 2c7 5-9 7-3 12M21 7c-7 4 3 5-2 9\" stroke=\"#e5bd82\" stroke-width=\"1.6\" stroke-linecap=\"round\"/><path d=\"M7 18h15l-2 10H9L7 18ZM22 19h2a3 3 0 0 1 0 6h-3M5 31c4 3 17 3 21-1M8 34h15\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><span>Java</span></button></nav><aside class=\"ds-execution-sidebar\" aria-label=\"Execution history\"><div class=\"ds-history-heading\"><h2>Executions</h2><button class=\"ds-history-icon\" aria-label=\"Refresh executions\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M3 11a9 9 0 1 1 2.6 6.4M3 4v7h7\"/></svg></button><button class=\"ds-history-icon ds-sidebar-close\" aria-label=\"Close execution history\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 6 12 12M6 18 18 6\"/></svg></button></div><button class=\"ds-new-execution\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg>New execution</button><div class=\"ds-history-scroll\"><section class=\"ds-history-group\"><h3>Today</h3><ul><li><button class=\"ds-execution-item\" title=\"Solution.strStr(&quot;world&quot;, &quot;zz&quot;) · Returned -1\"><span class=\"ds-execution-name\">strStr(&quot;world&quot;, &quot;zz&quot;)</span><span class=\"ds-execution-meta\"><span class=\"ds-execution-outcome\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m5 12 4 4L19 6\"/></svg><span>Returned -1</span></span><time>06:53 PM</time></span></button></li><li><button class=\"ds-execution-item ds-execution-active\" aria-current=\"true\" title=\"Solution.strStr(&quot;hello&quot;, &quot;ll&quot;) · Returned 2\"><span class=\"ds-execution-name\">strStr(&quot;hello&quot;, &quot;ll&quot;)</span><span class=\"ds-execution-meta\"><span class=\"ds-execution-outcome\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m5 12 4 4L19 6\"/></svg><span>Returned 2</span></span><time>06:53 PM</time></span></button></li></ul></section></div><div class=\"ds-history-retention\">Executions are kept for 24 hours.</div></aside></div><nav class=\"ds-nav\" aria-label=\"Workspace panels\"><button><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m16 18 6-6-6-6M8 6l-6 6 6 6\"/></svg>Code</button><button><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M21 4h-7m-4 0H3m18 8H11m-4 0H3m18 8h-5m-4 0H3M14 1v6M7 9v6m9 2v6\"/></svg>Inputs</button><button class=\"ds-active\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M9 9v12\"/></svg>Trace</button><button><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m4 17 6-5-6-5m8 12h8\"/></svg>Output</button></nav>",
+      "css": ".ds-nav{display:flex;border-bottom:1px solid var(--line,#343434);gap:5px;max-width:420px}.ds-nav button{display:flex;align-items:center;justify-content:center;gap:7px;width:25%;background:none;border:0;border-bottom:2px solid transparent;color:var(--secondary,#a7a7a7);padding:11px 0;font:12px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;cursor:pointer}.ds-nav button.ds-active{color:var(--accent,#e5e5e5);border-bottom-color:var(--accent,#e5e5e5)}.ds-nav button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-execution-preview{display:grid;grid-template-columns:56px 248px;width:304px;max-width:100%;height:440px;margin-bottom:20px;color:var(--text,#ececec);font-family:Inter,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif}.ds-language-rail{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;padding:18px 6px;gap:16px;background:#1d1d1d;border-right:1px solid #303030}.ds-language-choice{box-sizing:border-box;width:42px;min-height:62px;border:1px solid #414141;border-radius:9px;background:#303030;color:var(--text,#ececec);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}.ds-language-choice span{font-size:9px}.ds-execution-sidebar{box-sizing:border-box;display:flex;flex-direction:column;min-height:0;background:#1b1b1b;border-right:1px solid #303030;padding:0 8px}.ds-history-heading{display:flex;align-items:center;gap:4px;padding:20px 10px 16px}.ds-history-heading h2{margin:0 auto 0 0;font-size:14px;font-weight:600}.ds-history-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;border-radius:5px;background:transparent;color:var(--secondary,#a7a7a7);cursor:pointer}.ds-history-icon:hover{background:#373737;color:var(--text,#ececec)}.ds-execution-sidebar .ds-sidebar-close{display:none}.ds-new-execution{display:flex;align-items:center;gap:9px;width:100%;min-height:35px;border:0;border-radius:6px;padding:0 11px;color:var(--text,#ececec);background:transparent;text-align:left;font:12px Inter,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;cursor:pointer}.ds-new-execution:hover:not(:disabled){background:#2b2b2b}.ds-history-scroll{flex:1;min-height:0;overflow-y:auto;padding:0 2px 16px}.ds-history-group{margin-top:20px}.ds-history-group h3{margin:0;color:var(--secondary,#a7a7a7);font-size:10px;font-weight:550;padding:0 10px 7px}.ds-history-group ul{list-style:none;margin:0;padding:0}.ds-execution-item{display:flex;flex-direction:column;gap:5px;width:100%;min-width:0;border:0;border-radius:7px;background:transparent;color:#d5d5d5;text-align:left;padding:10px;margin-bottom:2px;font-family:inherit;cursor:pointer}.ds-execution-item:hover:not(:disabled){background:#252525}.ds-execution-item.ds-execution-active{background:#303030;color:var(--text,#ececec)}.ds-execution-item:disabled{opacity:.7}.ds-execution-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.ds-execution-meta{display:flex;align-items:center;gap:9px;justify-content:space-between;width:100%;color:var(--secondary,#a7a7a7);font-size:10px}.ds-execution-outcome{min-width:0;display:flex;align-items:center;gap:5px}.ds-execution-outcome svg{flex-shrink:0}.ds-execution-outcome>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-execution-meta time{flex-shrink:0;font-size:9px}.ds-history-retention{padding:12px 10px 18px;color:var(--secondary,#a7a7a7);font-size:9px;border-top:1px solid #303030}.ds-language-choice:focus-visible,.ds-history-icon:focus-visible,.ds-new-execution:focus-visible,.ds-execution-item:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}"
+    },
+    {
+      "name": "Parameter type",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Small metadata tag beside the parameter name.",
+      "html": "<code class=\"ds-tag\">int[]</code>",
+      "css": ".ds-tag{display:inline-block;color:var(--secondary,#a7a7a7);background:#303030;padding:1px 6px;border-radius:4px;font:10px Consolas, \"Cascadia Code\", monospace}"
+    },
+    {
+      "name": "Workspace panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat bordered container shared by the working surfaces.",
+      "html": "<section class=\"ds-panel\"><header class=\"ds-heading\">Method inputs</header><p class=\"ds-panel-body\">Choose an entry point and provide parameter values.</p></section>",
+      "css": ".ds-panel{max-width:420px;border:1px solid var(--line,#343434);border-radius:12px;background:var(--panel,#202020);overflow:hidden;color:var(--text,#ececec);font-family:Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif}.ds-heading{display:flex;align-items:center;height:49px;padding:0 17px;border-bottom:1px solid var(--line,#343434);font-size:13px;font-weight:550}.ds-panel-body{margin:0;padding:20px 21px;color:var(--secondary,#a7a7a7);font-size:11px;line-height:1.5}"
+    },
+    {
+      "name": "Selected observation",
+      "kind": "custom",
+      "refersTo": "trace-observation",
+      "description": "Recorded operand substitutions in source markers, condition details, and an after-expression trace row.",
+      "html": "<div class=\"ds-condition-samples\"><code>if (nums[mid] == target)<span class=\"ds-condition-inline ds-condition-true\" title=\"Last evaluated true in the selected invocation at this point in the recording.\">(9 == 9) → TRUE</span></code><code>if (nums[mid] &lt; target)<span class=\"ds-condition-inline ds-condition-false\" title=\"Last evaluated false in the selected invocation at this point in the recording.\">(9 &lt; 9) → FALSE</span></code><code>while (left &lt;= right)<span class=\"ds-condition-inline ds-condition-pending\" title=\"No result has been recorded for this condition in the selected invocation at this step.\">—</span></code><code>if (value instanceof String text)<span class=\"ds-condition-inline ds-condition-pending\" title=\"A result is unavailable for this Java flow-sensitive condition.\">N/A</span></code></div><section class=\"ds-condition-detail\" aria-label=\"Condition values\"><div class=\"ds-condition-detail-heading\"><span>Condition at this step</span><span class=\"ds-condition-location\">if · line 9</span><span class=\"ds-condition-pill ds-condition-true\">TRUE</span></div><code class=\"ds-condition-expression\">(nums[mid] == target)</code><div class=\"ds-condition-equation\"><code>(9 == 9)</code><span aria-hidden=\"true\">→</span><strong class=\"ds-condition-outcome-true\">true</strong></div><div class=\"ds-condition-operands\" aria-label=\"Recorded operand values\"><span><code>nums[mid]</code><span>=</span><code>9</code></span><span><code>target</code><span>=</span><code>9</code></span></div></section><div class=\"ds-trace-scroll\"><table class=\"ds-trace\"><thead><tr><th>Step</th><th>Line</th><th>Source</th><th>mid</th></tr></thead><tbody><tr class=\"ds-selected\"><td><button class=\"ds-step\" aria-label=\"Observation 8, line 9\">&#8594; 8</button></td><td>9</td><td><span class=\"ds-source-content\"><code>if (nums[mid] == target)</code><span class=\"ds-condition-pill ds-condition-true\" title=\"Recorded result. This row shows values after the condition was evaluated once.\">true</span></span><div class=\"ds-condition-row-values\" title=\"(9 == 9)\">(9 == 9)</div></td><td><button class=\"ds-value\"><span class=\"ds-dot\"></span>2</button></td></tr></tbody></table></div>",
+      "css": ".ds-trace-scroll{overflow:auto}.ds-trace{border-spacing:0;border-collapse:separate;white-space:nowrap;font:11px Consolas, \"Cascadia Code\", monospace;color:var(--text,#ececec);font-variant-numeric:tabular-nums}.ds-trace th{height:36px;padding:0 13px;background:#292929;color:var(--secondary,#a7a7a7);font:450 10px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;text-align:left;border-bottom:1px solid var(--line,#343434)}.ds-trace td{height:39px;padding:0 13px;background:#343434;border-bottom:1px solid #303030}.ds-trace tr:hover td{background:#262626}.ds-trace tr.ds-selected td{background:#343434}.ds-step,.ds-value{border:0;background:none;padding:0;cursor:pointer;font:11px Consolas, \"Cascadia Code\", monospace}.ds-step{color:var(--accent,#e5e5e5)}.ds-value{display:inline-flex;align-items:center;gap:6px;color:var(--amber,#e5bd82)}.ds-dot{display:inline-block;width:4px;height:4px;border-radius:100%;background:var(--amber,#e5bd82)}.ds-step:focus-visible,.ds-value:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-condition-samples{display:flex;flex-direction:column;gap:8px;padding:12px;margin-bottom:12px;background:#1b1b1b;color:var(--text,#ececec)}.ds-condition-samples code{font:13px/22px Consolas,\"Cascadia Code\",monospace;white-space:nowrap}.ds-condition-inline{font:600 10px Consolas,\"Cascadia Code\",monospace;border-radius:3px;padding:1px 3px;margin-left:6px}.ds-condition-true{color:var(--success,#8ed6ac);background:#28362e}.ds-condition-false{color:var(--error,#e6a09b);background:#3a2b2b}.ds-condition-pending{color:var(--secondary,#a7a7a7);background:#303030}.ds-condition-pill{display:inline-block;flex-shrink:0;font:10px Consolas,\"Cascadia Code\",monospace;line-height:18px;padding:0 5px;border-radius:3px}.ds-source-content{display:flex;align-items:center;gap:8px;min-width:0}.ds-condition-detail {\n  padding: 14px 18px 16px;\n  border-top: 1px solid var(--line,#343434);\n  background: #242424;\n}\n.ds-condition-detail-heading {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  margin-bottom: 7px;\n  font-size: 11px;\n  color: var(--text,#ececec);\n}\n.ds-condition-location {\n  color: var(--secondary,#a7a7a7);\n  font-size: 10px;\n}\n.ds-condition-detail-heading .ds-condition-pill {\n  margin-left: auto;\n}\n.ds-condition-expression {\n  display: block;\n  color: var(--secondary,#a7a7a7);\n  font-size: 11px;\n  overflow-wrap: anywhere;\n}\n.ds-condition-equation {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: baseline;\n  gap: 10px;\n  margin-top: 7px;\n  font-size: 13px;\n}\n.ds-condition-equation code {\n  overflow-wrap: anywhere;\n  min-width: 0;\n}\n.ds-condition-equation > span {\n  color: var(--secondary,#a7a7a7);\n}\n.ds-condition-equation strong {\n  font: 600 12px var(--mono,Consolas, \"Cascadia Code\", monospace);\n}\n.ds-condition-outcome-true {\n  color: var(--success,#8ed6ac);\n}\n.ds-condition-outcome-false {\n  color: var(--error,#e6a09b);\n}\n.ds-condition-operands {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 5px 18px;\n  margin-top: 10px;\n  font-size: 10px;\n}\n.ds-condition-operands > span {\n  display: inline-flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  min-width: 0;\n}\n.ds-condition-operands code {\n  overflow-wrap: anywhere;\n  min-width: 0;\n}\n.ds-condition-operands code:first-child,\n.ds-condition-operands > span > span {\n  color: var(--secondary,#a7a7a7);\n}\n.ds-condition-operands .ds-operand-skipped {\n  color: var(--secondary,#a7a7a7);\n}\n.ds-condition-detail p {\n  color: var(--secondary,#a7a7a7);\n  font-size: 11px;\n  margin-top: 8px;\n}\n.ds-condition-row-values{color:var(--secondary,#a7a7a7);font-size:9px;line-height:14px;overflow:hidden;text-overflow:ellipsis}"
+    },
+    {
+      "name": "Value inspector",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "Raised, scrollable detail for a selected binding.",
+      "html": "<aside class=\"ds-inspector\"><header class=\"ds-inspector-heading\"><strong>nums</strong><code>int[]</code><button aria-label=\"Close value inspector\">&#215;</button></header><pre>[\n  2,\n  5,\n  9,\n  12\n]</pre></aside>",
+      "css": ".ds-inspector{width:390px;max-width:calc(100vw - 40px);max-height:70vh;overflow:auto;background:var(--raised,#2c2c2c);border:1px solid #4a4a4a;border-radius:12px;box-shadow:0 12px 35px #0008;color:var(--text,#ececec);font:13px Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif}.ds-inspector-heading{position:sticky;top:0;background:var(--raised,#2c2c2c);height:49px;display:flex;align-items:center;gap:9px;padding:0 17px;border-bottom:1px solid var(--line,#343434)}.ds-inspector code{font:10px Consolas, \"Cascadia Code\", monospace;color:var(--secondary,#a7a7a7)}.ds-inspector button{margin-left:auto;width:28px;height:28px;border:0;border-radius:5px;background:transparent;color:var(--secondary,#a7a7a7);font-size:20px;cursor:pointer}.ds-inspector button:hover{background:#373737;color:var(--text,#ececec)}.ds-inspector button:focus-visible{outline:2px solid var(--accent,#e5e5e5);outline-offset:4px}.ds-inspector pre{padding:0 17px 12px;white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.7 Consolas, \"Cascadia Code\", monospace}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Execution Workspace",
+    "overview": "A neutral charcoal workspace supports sustained code reading. Off-white identifies the primary action, selection, and focus; warm amber identifies changed values. Green and coral distinguish recorded true and false condition outcomes. The interface begins with the work itself, without a separate brand header.\n\nControls remain compact and familiar. System UI type carries the interface while monospace carries source, signatures, measured values, and results. This document records the implemented visual system in `apps/web/src/app/globals.css`, `Workspace.tsx`, `CodeEditor.tsx`, `ConditionDetails.tsx`, and `ExecutionNavigation.tsx`.",
+    "keyCharacteristics": [
+      "Neutral charcoal surfaces with restrained tonal layering.",
+      "Off-white control and selection cues, with semantic color for condition outcomes and changes.",
+      "Compact controls around a wide, readable observation table.",
+      "Source and values connected through one replay position."
+    ],
+    "rules": [
+      {
+        "name": "The Change Cue Rule",
+        "body": "Changed values carry both amber text and a dot. Preserve that second cue when adding trace states.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat Panel Rule",
+        "body": "Use tonal separation and borders for persistent workspace panels. Reserve the existing shadow treatment for the floating inspector.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use off-white for controls, selection, focus, and completion; use semantic green for recorded true condition outcomes.",
+      "**Do** pair changed-value color with its dot.",
+      "**Do** keep source, table cursor, and selected values synchronized.",
+      "**Do** preserve pinned table headers and Step / Line columns within the scroll region.",
+      "**Do** retain the compact system UI and monospace role separation.",
+      "**Do** provide the existing visible off-white focus outline for interactive controls.",
+      "**Do** keep condition labels and their recorded evaluation timing explicit.",
+      "**Do** show original expressions beside captured operand substitutions and label skipped operands as not evaluated.",
+      "**Do** keep history independently scrollable and preserve the drawer's keyboard focus and dismissal behavior."
+    ],
+    "donts": [
+      "**Don't** add marketing sections or decorative imagery to the operating workspace.",
+      "**Don't** add persistent panel shadows that compete with the inspector layer.",
+      "**Don't** use playback controls to imply a new execution.",
+      "**Don't** replace actual submitted source, diagnostics, or returned values with explanatory substitutes."
+    ]
+  }
+}

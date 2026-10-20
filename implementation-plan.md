@@ -1,7 +1,7 @@
 # Code Visualizer — Implementation Plan
 
 Date: 17 October 2026  
-Status: Java-first application implemented; local Java execution and the Next.js browser flow are verified. Docker execution is implemented but awaits infrastructure verification on a machine with Docker. See `README.md` for setup, current limits, and explicit deviations from this original roadmap.
+Status: Java-first application implemented; local Java execution and the Next.js browser flow are verified. A Tauri 2 Windows x64 desktop shell now packages the production Next.js server, execution service, Node.js, and Java runtime; see `DESKTOP.md` for the desktop architecture and release process. Docker execution is implemented but awaits infrastructure verification on a machine with Docker. See `README.md` for setup, current limits, and explicit deviations from this original roadmap.
 
 ## 1. Intended result
 

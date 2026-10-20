@@ -7,6 +7,7 @@ import {
   LoaderCircle,
   Plus,
   RefreshCw,
+  Code2,
   X,
 } from "lucide-react";
 import {
@@ -60,6 +61,8 @@ function groupName(timestamp: number) {
       : "Earlier";
 }
 export default function ExecutionNavigation({
+  language,
+  onLanguage,
   executions,
   selectedId,
   openingId,
@@ -72,6 +75,8 @@ export default function ExecutionNavigation({
   onMore,
   onRefresh,
 }: {
+  language: "java" | "cpp";
+  onLanguage: (language: "java" | "cpp") => void;
   executions: ExecutionSummary[];
   selectedId?: string;
   openingId?: string;
@@ -138,16 +143,18 @@ export default function ExecutionNavigation({
     <>
       <nav className="language-rail" aria-label="Languages">
         <button
-          className="language-choice selected"
+          className={`language-choice ${language === "java" ? "selected" : ""}`}
           aria-label="Java"
-          aria-pressed="true"
-          title="Java · selected"
-          onClick={() => {
-            if (compact) setOpen(true);
-          }}
+          aria-pressed={language === "java"}
+          title="Java"
+          disabled={busy}
+          onClick={() => onLanguage("java")}
         >
           <JavaIcon />
           <span>Java</span>
+        </button>
+        <button className={`language-choice ${language === "cpp" ? "selected" : ""}`} aria-label="C++" aria-pressed={language === "cpp"} title="C++20" disabled={busy} onClick={() => onLanguage("cpp")}>
+          <Code2 size={25}/><span>C++</span>
         </button>
         <button
           className="history-toggle"

@@ -1599,3 +1599,70 @@ textarea:disabled {
     transition: none !important;
   }
 }
+
+/* The canvas shares the trace's cursor and charcoal workspace surfaces. */
+.example-select {
+  max-width: 170px;
+  min-height: 32px;
+  padding: 5px 8px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 11px;
+}
+.language-choice:not(.selected) {
+  background: transparent;
+  border-color: transparent;
+  color: var(--secondary);
+}
+.language-choice:not(.selected):hover { background: var(--raised); color: var(--text); }
+.trace-view-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 18px 13px;
+}
+.trace-view-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 11px;
+  transition: background 150ms;
+}
+.trace-view-switch button:hover { color: var(--text); background: var(--raised); }
+.trace-view-switch button[aria-pressed="true"] { color: var(--text); background: var(--raised); border-color: #515151; }
+.trace-view-switch > span { margin-left: auto; color: var(--secondary); font-size: 10px; }
+.canvas-toolbar, .canvas-tools, .canvas-call-stack { display: flex; align-items: center; }
+.canvas-toolbar { min-height: 42px; padding: 4px 14px; gap: 12px; border-bottom: 1px solid var(--line); justify-content: space-between; }
+.canvas-call-stack { gap: 8px; color: var(--secondary); font-size: 11px; min-width: 0; overflow-x: auto; }
+.canvas-call-stack code { color: var(--text); white-space: nowrap; }
+.canvas-tools { gap: 4px; flex-shrink: 0; }
+.canvas-tools > span { min-width: 34px; text-align: center; font: 10px var(--mono); color: var(--secondary); }
+.canvas-scroll { width: 100%; max-height: 560px; overflow: auto; background: #1b1b1b; overscroll-behavior: contain; }
+.canvas-scroll canvas { display: block; cursor: pointer; }
+.canvas-explanation { padding: 14px 18px; border-top: 1px solid var(--line); }
+.canvas-explanation > div { display: flex; align-items: baseline; gap: 7px; font-size: 12px; color: var(--amber); overflow-wrap: anywhere; }
+.canvas-explanation > code { display: block; margin-top: 7px; font-size: 11px; color: var(--secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.canvas-explanation > code span { margin-left: 9px; color: var(--text); }
+.canvas-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 7px; padding: 0 18px 13px; color: var(--secondary); font-size: 10px; }
+.canvas-accessible-values { border-top: 1px solid var(--line); padding: 10px 18px; color: var(--secondary); font-size: 11px; }
+.canvas-accessible-values summary { cursor: pointer; width: fit-content; }
+.canvas-accessible-values > div { display: flex; flex-wrap: wrap; gap: 14px; padding-top: 12px; }
+.table-scroll[hidden] { display: none; }
+@media (max-width: 900px) {
+  .workspace-toolbar { flex-wrap: wrap; }
+  .toolbar-actions { flex-wrap: wrap; }
+  .trace-view-switch { padding: 0 12px 12px; }
+  .trace-view-switch > span { display: none; }
+  .canvas-toolbar { flex-wrap: wrap; padding: 6px 10px; }
+  .canvas-scroll { max-height: 430px; }
+  .canvas-explanation { padding: 12px; }
+  .canvas-footer { padding: 0 12px 12px; }
+}

@@ -3,6 +3,7 @@ for (const [cmd, args] of [
   ["node", ["--version"]],
   ["java", ["-version"]],
   ["javac", ["-version"]],
+  ["clang++", ["--version"]],
   ["docker", ["info", "--format", "{{.ServerVersion}}"]],
 ]) {
   const result = spawnSync(cmd, args, { encoding: "utf8" });

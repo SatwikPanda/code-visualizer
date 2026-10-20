@@ -6,3 +6,7 @@ apps/web/public/monaco/
 .env
 test-results/
 playwright-report/
+src-tauri/target/
+src-tauri/resources/payload/
+src-tauri/gen/
+release/

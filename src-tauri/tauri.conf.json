@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Code Visualizer",
+  "version": "0.1.0",
+  "identifier": "dev.codevisualizer.desktop",
+  "mainBinaryName": "CodeVisualizer",
+  "build": {
+    "beforeBuildCommand": "npm run desktop:prepare",
+    "beforeDevCommand": "npm run desktop:prepare",
+    "frontendDist": "loading"
+  },
+  "app": {
+    "windows": [],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'",
+      "capabilities": []
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "Code Visualizer",
+    "category": "DeveloperTool",
+    "shortDescription": "Visualize real Java execution and variable changes",
+    "icon": ["icons/icon.ico", "icons/icon.png"],
+    "resources": { "resources/payload/": "payload/" },
+    "windows": {
+      "webviewInstallMode": { "type": "embedBootstrapper" },
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false,
+        "compression": "lzma"
+      }
+    }
+  }
+}

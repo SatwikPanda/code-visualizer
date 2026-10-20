@@ -8,7 +8,7 @@
     "dev:local": "tsx scripts/dev.ts --local",
     "build": "npm run assets && next build apps/web --webpack",
     "build:java": "node scripts/build-java.mjs",
-    "build:sandbox-images": "docker build -t codeviz-java:21 -f infra/java.Dockerfile .",
+    "build:sandbox-images": "docker build -t codeviz-java:21 -f infra/java.Dockerfile . && docker build -t codeviz-cpp:20 -f infra/cpp.Dockerfile .",
     "assets": "node scripts/assets.mjs",
     "doctor": "node scripts/doctor.mjs",
     "start": "tsx scripts/dev.ts --production",
@@ -16,7 +16,12 @@
     "test": "tsx --test tests/*.test.ts",
     "test:integration": "npm run build:java && tsx --test tests/integration/*.test.ts",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p apps/web/tsconfig.json"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p apps/web/tsconfig.json",
+    "tauri": "tauri",
+    "desktop:prepare": "node scripts/prepare-desktop.mjs",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "node scripts/build-desktop.mjs",
+    "test:desktop": "node scripts/test-desktop.mjs"
   },
   "dependencies": {
     "@monaco-editor/react": "4.7.0",
@@ -30,9 +35,11 @@
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
+    "@tauri-apps/cli": "2.12.3",
     "@types/node": "22.18.11",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "esbuild": "0.28.2",
     "prettier": "3.6.2",
     "tsx": "4.20.6",
     "typescript": "5.9.3"

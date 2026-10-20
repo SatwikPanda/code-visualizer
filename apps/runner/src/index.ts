@@ -38,6 +38,7 @@ import {
   deleteRecord,
 } from "./storage";
 import { ProcessFailure } from "./process";
+import { cppAdapter, cppManifest } from "../../../packages/language-cpp/src/adapter";
 
 const key = process.env.RUNNER_SECRET;
 if (!key)
@@ -49,7 +50,7 @@ if (backend === "local" && process.env.CODEVIZ_ALLOW_LOCAL !== "1")
 recover();
 const listeners = new Map<string, Set<http.ServerResponse>>();
 const controllers = new Map<string, AbortController>();
-const adapters = new Map([["java", javaAdapter]]);
+const adapters = new Map([["java", javaAdapter], ["cpp", cppAdapter]]);
 function notify(id: string) {
   for (const res of listeners.get(id) || []) {
     if (!res.destroyed)
@@ -88,6 +89,7 @@ async function work() {
   active.add(job.id);
   const dir = path.join(dataRoot, "jobs", job.id);
   let record = JSON.parse(job.data);
+  const adapter = adapters.get(record.languageId || "java")!;
   const setStatus = (status: string) => {
     record = { ...record, status, updatedAt: Date.now() };
     update(job.id, record, lease);
@@ -97,9 +99,7 @@ async function work() {
     if (cancelled(job.id)) throw new ProcessFailure("Cancelled", "cancelled");
     if (job.kind === "analysis") {
       setStatus("analyzing");
-      const result = await adapters
-        .get("java")!
-        .analyze(dir, record.source, signal.signal);
+      const result = await adapter.analyze(dir, record.source, signal.signal);
       record = {
         ...record,
         ...result,
@@ -109,7 +109,7 @@ async function work() {
     } else {
       const run = record as Run;
       setStatus("compiling");
-      const result = await javaAdapter.analyze(dir, run.source, signal.signal);
+      const result = await adapter.analyze(dir, run.source, signal.signal);
       if (!result.valid) {
         record.error = {
           type: "CompileError",
@@ -163,7 +163,7 @@ async function work() {
       commit({ kind: "checkpoint", state: {}, stateThroughSeq: 0 });
       const timer = setInterval(flush, 250);
       try {
-        await javaAdapter.execute(
+        await adapter.execute(
           dir,
           { ...run, ...result } as unknown as Analysis,
           run.entry,
@@ -218,7 +218,7 @@ async function work() {
         );
         if (!outcome)
           throw new ProcessFailure(
-            "The JVM did not report a completed invocation",
+            "The runtime did not report a completed invocation",
             "interrupted",
           );
         record.outcome = outcome.outcome;
@@ -235,7 +235,7 @@ async function work() {
     }
   } catch (error) {
     const e = error as Error;
-    record.error = { type: e.name, message: e.message };
+    record.error = job.kind === "analysis" ? e.message : { type: e.name, message: e.message };
     record.traceCompleteness = "partial";
     setStatus(
       job.kind === "analysis"
@@ -275,12 +275,12 @@ const server = http.createServer(async (req, res) => {
     const id = pieces[1];
     if (req.method === "GET" && pieces[0] === "languages")
       return json(res, 200, {
-        languages: [javaManifest],
+        languages: [javaManifest, cppManifest],
         backend,
         runtime:
           backend === "local"
-            ? "Installed JDK · local trusted-code mode"
-            : "Isolated Docker / Java 21",
+            ? "Local runtimes · JDK / Clang C++20"
+            : "Isolated Docker / Java 21 / C++20",
         limits: { events: 10000, executionSeconds: 15 },
       });
     if (req.method === "GET" && pieces.length === 1 && pieces[0] === "runs") {
@@ -352,6 +352,7 @@ const server = http.createServer(async (req, res) => {
       const source = input.source.replace(/\r\n/g, "\n");
       const analysis = {
         id: randomUUID(),
+        languageId: input.languageId,
         source,
         sourceHash: createHash("sha256").update(source).digest("hex"),
         status: "queued",
@@ -400,7 +401,7 @@ const server = http.createServer(async (req, res) => {
       if (outstanding.n > 0) fail("Stop or finish the current run first", 429);
       const run = {
         id: randomUUID(),
-        languageId: "java",
+        languageId: analysis.languageId || "java",
         analysisId: analysis.id,
         sourceHash: analysis.sourceHash,
         source: analysis.source,
@@ -535,11 +536,15 @@ const server = http.createServer(async (req, res) => {
     });
   }
 });
-server.listen(Number(process.env.RUNNER_PORT || 4317), "127.0.0.1", () =>
+server.listen(Number(process.env.RUNNER_PORT ?? 4317), "127.0.0.1", () => {
+  const address = server.address();
+  const port = typeof address === "object" && address ? address.port : 4317;
   console.log(
-    `Execution service: http://127.0.0.1:${process.env.RUNNER_PORT || 4317} (${backend})`,
-  ),
-);
+    process.env.CODEVIZ_DESKTOP_MODE === "1"
+      ? `CODEVIZ_RUNNER_READY ${port}`
+      : `Execution service: http://127.0.0.1:${port} (${backend})`,
+  );
+});
 setInterval(() => void work(), 500).unref();
 setInterval(() => {
   const expired = db

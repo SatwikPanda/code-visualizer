@@ -11,12 +11,14 @@ export default function CodeEditor({
   line,
   conditions = [],
   readOnly = false,
+  language = "java",
 }: {
   value: string;
   onChange: (v: string) => void;
   line?: number;
   conditions?: ConditionMarker[];
   readOnly?: boolean;
+  language?: "java" | "cpp";
 }) {
   const instance = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorations = useRef<editor.IEditorDecorationsCollection | null>(null);
@@ -111,7 +113,7 @@ export default function CodeEditor({
   return (
     <Editor
       height="100%"
-      language="java"
+      language={language}
       value={value}
       onChange={(v) => onChange(v || "")}
       onMount={mounted}

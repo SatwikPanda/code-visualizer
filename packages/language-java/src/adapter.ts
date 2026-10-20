@@ -20,7 +20,7 @@ export const javaManifest = {
   },
 };
 export interface LanguageAdapter {
-  manifest: typeof javaManifest;
+  manifest: Omit<typeof javaManifest, "trace"> & { trace: Record<string, boolean | string> };
   analyze(
     job: string,
     source: string,
@@ -38,7 +38,7 @@ export interface LanguageAdapter {
 }
 export const backend =
   process.env.CODEVIZ_BACKEND === "local" ? "local" : "docker";
-const toolClasses = path.resolve(".data/java");
+const toolClasses = path.resolve(process.env.CODEVIZ_JAVA_CLASSES || ".data/java");
 let imageId: string | undefined;
 async function docker(
   args: string[],

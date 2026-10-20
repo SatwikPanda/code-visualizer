@@ -4,9 +4,11 @@ import { conditionExplanation } from "../../../../packages/trace-model/src/index
 export default function ConditionDetails({
   marker,
   current,
+  operandSupport = true,
 }: {
   marker: ConditionMarker;
   current: boolean;
+  operandSupport?: boolean;
 }) {
   const known = marker.value !== undefined;
   const explanation = conditionExplanation(marker);
@@ -71,8 +73,12 @@ export default function ConditionDetails({
           {!marker.recordable
             ? marker.reason
             : known
-              ? "Operand values are missing from this older recording. Run the program again to capture them."
-              : "Step forward to see the values used when this condition is evaluated."}
+              ? operandSupport
+                ? "Operand values are missing from this older recording. Run the program again to capture them."
+                : "This is the recorded C++ condition result. Individual operand previews are not captured."
+              : operandSupport
+                ? "Step forward to see the values used when this condition is evaluated."
+                : "Step forward to see the recorded condition result."}
         </p>
       )}
     </section>

@@ -46,6 +46,10 @@ export async function processLines(
       "JDK_JAVA_OPTIONS",
       "_JAVA_OPTIONS",
       "_JAVA_JDWP_OPTIONS",
+      "RUNNER_SECRET",
+      "CODEVIZ_DESKTOP_TOKEN",
+      "CODEVIZ_DESKTOP_OWNER",
+      "NODE_OPTIONS",
     ])
       delete env[key];
     const child = spawn(executable, args, {

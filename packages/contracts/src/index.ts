@@ -70,6 +70,7 @@ export interface ConditionMarker extends ConditionDefinition {
   capturedOperands?: ConditionResult["operands"];
 }
 export interface Analysis {
+  languageId?: "java" | "cpp";
   id: string;
   sourceHash: string;
   source: string;
@@ -96,6 +97,7 @@ export type TraceValue = {
     | "array"
     | "object"
     | "reference"
+    | "iterator"
     | "unavailable";
   type?: string;
   text?: string;
@@ -106,6 +108,9 @@ export type TraceValue = {
   length?: number;
   truncated?: boolean;
   reason?: string;
+  container?: "vector" | "array" | "deque" | "list" | "set" | "map" | "stack" | "queue" | "tuple";
+  capacity?: number;
+  pointsTo?: { refId: string; index?: number; end?: boolean; invalidated?: boolean; unavailable?: boolean };
 };
 export interface Binding {
   id: string;
@@ -225,7 +230,7 @@ export const terminal = (status: string) =>
   ].includes(status);
 export const analysisRequest = z.object({
   source: z.string().min(1).max(65536),
-  languageId: z.literal("java").default("java"),
+  languageId: z.enum(["java", "cpp"]).default("java"),
 });
 export const runRequest = z.object({
   analysisId: z.string().uuid(),
@@ -346,8 +351,12 @@ export function formatValue(v?: TraceValue): string {
     return JSON.stringify(v.value) + (v.truncated ? "…" : "");
   if (v.kind === "char") return `'${v.value}'`;
   if (v.kind === "boolean") return String(v.value);
+  if (v.kind === "iterator")
+    return v.pointsTo?.unavailable ? "iterator position unavailable" : v.pointsTo?.invalidated ? "invalidated iterator" : v.pointsTo?.end ? "end()" : `→ [${v.pointsTo?.index ?? "?"}]`;
   if (v.kind === "array")
     return `[${(v.items || []).map(formatValue).join(", ")}${v.truncated ? ", …" : ""}]`;
+  if (v.kind === "object" && v.fields)
+    return `{${Object.entries(v.fields).map(([key, value]) => `${key}: ${formatValue(value)}`).join(", ")}}`;
   if (v.kind === "object" || v.kind === "reference")
     return `${v.type} @${v.refId}`;
   if (v.kind === "unavailable") return "unavailable";

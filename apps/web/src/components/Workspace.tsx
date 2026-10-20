@@ -24,6 +24,7 @@ import {
   X,
   GitBranch,
   FileCode2,
+  Shapes,
 } from "lucide-react";
 import { EXAMPLE_SOURCE } from "../../../../packages/contracts/src/example";
 import {
@@ -32,6 +33,8 @@ import {
 } from "../../../../packages/trace-model/src/index";
 import ConditionDetails from "./ConditionDetails";
 import ExecutionNavigation from "./ExecutionNavigation";
+import AnimatedCanvas from "./AnimatedCanvas";
+import { CPP_EXAMPLES } from "../../../../packages/contracts/src/cpp-example";
 import {
   formatValue,
   terminal,
@@ -76,6 +79,11 @@ function defaultInput(type: InputType): string {
 }
 
 export default function Workspace() {
+  const [language, setLanguage] = useState<"java" | "cpp">("java");
+  const languageRef = useRef<"java" | "cpp">("java");
+  const drafts = useRef({java: EXAMPLE_SOURCE, cpp: CPP_EXAMPLES.vector.source});
+  const [traceView, setTraceView] = useState<"table" | "canvas">("table");
+  const [cppExample, setCppExample] = useState<keyof typeof CPP_EXAMPLES>("vector");
   const [source, setSource] = useState(EXAMPLE_SOURCE),
     [analysis, setAnalysis] = useState<Analysis | null>(null),
     [entryId, setEntryId] = useState(""),
@@ -238,7 +246,7 @@ export default function Workspace() {
     setHistoryError("");
     try {
       const page = await api<ExecutionPage>(
-        `runs?languageId=java&limit=30${after ? `&cursor=${encodeURIComponent(after)}` : ""}`,
+        `runs?languageId=${languageRef.current}&limit=30${after ? `&cursor=${encodeURIComponent(after)}` : ""}`,
       );
       if (token !== historyRevision.current) return;
       setHistory((current) =>
@@ -269,14 +277,14 @@ export default function Workspace() {
     );
   }, [run?.id, run?.status, run?.updatedAt]);
   const analyze = useCallback(
-    async (code: string) => {
+    async (code: string, languageId = languageRef.current) => {
       const token = ++revision.current;
       setAnalyzing(true);
       setError("");
       try {
         let result = await api<Analysis>("analyses", {
           source: code,
-          languageId: "java",
+          languageId,
         });
         for (
           let i = 0;
@@ -297,7 +305,8 @@ export default function Workspace() {
         const preferred =
           result.entryPoints.find((e) => e.supported && e.mode === "method") ||
           result.entryPoints.find((e) => e.supported);
-        configureEntry(result, preferred?.id || "");
+        const example = languageId === "cpp" ? Object.values(CPP_EXAMPLES).find(e => e.source === code) : undefined;
+        configureEntry(result, preferred?.id || "", example?.args);
       } catch (e) {
         if (token === revision.current) setError((e as Error).message);
       } finally {
@@ -318,7 +327,8 @@ export default function Workspace() {
           const id = localStorage.getItem("codeviz-last-run");
           if (id && (await openRun(id, true))) return;
         } catch {}
-        if (!disposed) void analyze(EXAMPLE_SOURCE);
+        if (!disposed && revision.current === 0)
+          void analyze(latestSource.current, languageRef.current);
       })
       .catch((e) => {
         if (!disposed) setError(e.message);
@@ -416,7 +426,7 @@ export default function Workspace() {
       cancelAnimationFrame(pending);
       cancelAnimationFrame(reveal);
     };
-  }, [cursor, tab, frame, changesOnly, virtualizer]);
+  }, [cursor, tab, frame, changesOnly, traceView, virtualizer]);
   useEffect(() => {
     if (!pendingReveal.current || !tableRef.current?.clientHeight) return;
     const row = tableRef.current.querySelector(`[data-index="${cursor}"]`);
@@ -486,6 +496,10 @@ export default function Workspace() {
       revision.current++;
       setAnalyzing(false);
       setSource(r.source);
+      const restoredLanguage = r.languageId === "cpp" ? "cpp" : "java";
+      languageRef.current = restoredLanguage;
+      setLanguage(restoredLanguage);
+      void loadHistory();
       latestSource.current = r.source;
       setAnalysis(original);
       configureEntry(
@@ -535,6 +549,29 @@ export default function Workspace() {
     localStorage.removeItem("codeviz-last-run");
     if (!analysis || analysis.source !== source) void analyze(source);
   }
+  function changeLanguage(next: "java" | "cpp") {
+    if (next === language || running) return;
+    drafts.current[language] = source;
+    languageRef.current = next;
+    setLanguage(next);
+    navigationRevision.current++;
+    revision.current++;
+    setOpeningRun(undefined);
+    setRun(null); setEvents([]); nextSeq.current = 0;
+    setAnalysis(null); setSavedSource(false); setPlaying(false); setCursor(0);
+    setFrame("all"); setChangesOnly(false); setShowSetup(false); setInspected(null);
+    setStdin(""); setHistory([]); setHistoryCursor(null); setError("");
+    localStorage.removeItem("codeviz-last-run");
+    const code = drafts.current[next];
+    setSource(code); latestSource.current = code;
+    void loadHistory();
+    void analyze(code, next);
+  }
+  function loadExample() {
+    const code = language === "cpp" ? CPP_EXAMPLES[cppExample].source : EXAMPLE_SOURCE;
+    edit(code);
+    void analyze(code);
+  }
   async function cancel() {
     if (run)
       try {
@@ -563,6 +600,8 @@ export default function Workspace() {
   return (
     <div className="app-shell">
       <ExecutionNavigation
+        language={language}
+        onLanguage={changeLanguage}
         executions={history}
         selectedId={run?.id}
         openingId={openingRun}
@@ -595,12 +634,12 @@ export default function Workspace() {
             </span> */}
           </div>
           <div className="toolbar-actions">
+            {language === "cpp" && <select className="example-select" aria-label="C++ example" value={cppExample} disabled={running} onChange={e => setCppExample(e.target.value as keyof typeof CPP_EXAMPLES)}>
+              {Object.entries(CPP_EXAMPLES).map(([id,example]) => <option key={id} value={id}>{example.label}</option>)}
+            </select>}
             <button
               className="button subtle"
-              onClick={() => {
-                edit(EXAMPLE_SOURCE);
-                void analyze(EXAMPLE_SOURCE);
-              }}
+              onClick={loadExample}
               disabled={running}
             >
               <RotateCcw size={14} />
@@ -673,12 +712,12 @@ export default function Workspace() {
         <div className="upper-grid">
           <section
             className={`panel source-panel ${tab === "code" ? "mobile-visible" : ""}`}
-            aria-label="Java source editor"
+            aria-label={`${language === "cpp" ? "C++" : "Java"} source editor`}
           >
             <div className="panel-heading">
               <div className="panel-title">
                 <FileCode2 size={16} />
-                <span>{analysis?.fileName || "Solution.java"}</span>
+                <span>{analysis?.fileName || (language === "cpp" ? "Source.cpp" : "Solution.java")}</span>
                 {dirty && <span className="small-tag">edited</span>}
               </div>
               <div className="panel-meta">
@@ -693,11 +732,12 @@ export default function Workspace() {
                   <span>{lines.length} lines</span>
                 )}
                 <span className="language-dot" />
-                Java
+                {language === "cpp" ? "C++20" : "Java"}
               </div>
             </div>
             <div className="editor-container">
               <CodeEditor
+                language={language}
                 value={displaySource}
                 onChange={edit}
                 line={savedSource ? selected?.line : undefined}
@@ -769,7 +809,7 @@ export default function Workspace() {
                     <GitBranch size={13} />
                     {entry.mode === "program"
                       ? "Program mode · arguments and standard input"
-                      : `${entry.isStatic ? "Static" : "Instance"} method`}
+                      : language === "cpp" ? "Function" : `${entry.isStatic ? "Static" : "Instance"} method`}
                     <ArrowRight size={12} />
                     <code>{entry.returnType}</code>
                   </>
@@ -844,7 +884,7 @@ export default function Workspace() {
               {entry?.parameters.length === 0 && (
                 <div className="zero-args">
                   <Check size={16} />
-                  This method takes no arguments.
+                  This {language === "cpp" ? "function" : "method"} takes no arguments.
                 </div>
               )}
               <details className="stdin" open={entry?.mode === "program"}>
@@ -859,7 +899,7 @@ export default function Workspace() {
                   rows={3}
                   value={stdin}
                   onChange={(e) => setStdin(e.target.value)}
-                  placeholder="Input read from System.in"
+                  placeholder={language === "cpp" ? "Input read from std::cin" : "Input read from System.in"}
                 />
                 <p>The full buffer is sent once, followed by EOF.</p>
               </details>
@@ -888,7 +928,7 @@ export default function Workspace() {
                   <span className="count-badge">{observations.length}</span>
                 )}
               </div>
-              <p>Follow variable values and recorded condition results.</p>
+              <p>{traceView === "canvas" ? "Watch containers, iterators, and values change with each step." : "Follow variable values and recorded condition results."}</p>
             </div>
             <div className="trace-actions">
               <label className="check-control">
@@ -932,13 +972,18 @@ export default function Workspace() {
                 className="button subtle compact"
                 disabled={!run || running}
                 onClick={() =>
-                  run && window.open(`/api/runs/${run.id}/export`, "_blank")
+                  run && window.location.assign(`/api/runs/${run.id}/export`)
                 }
               >
                 <Download size={14} />
                 Export
               </button>
             </div>
+          </div>
+          <div className="trace-view-switch" role="group" aria-label="Visualization view">
+            <button aria-pressed={traceView === "table"} onClick={() => setTraceView("table")}><Table2 size={14}/> Step table</button>
+            <button aria-pressed={traceView === "canvas"} onClick={() => setTraceView("canvas")}><Shapes size={15}/> Animated canvas</button>
+            <span>One recording, two ways to explore</span>
           </div>
           {observations.length === 0 ? (
             <div className="trace-empty">
@@ -952,7 +997,7 @@ export default function Workspace() {
               </h3>
               <p>
                 {running
-                  ? "Real JVM states will appear here as they are recorded."
+                  ? "Recorded program states will appear here as they are captured."
                   : "Enter your inputs and run the program. Variable changes and source locations will appear here."}
               </p>
               <div className="empty-flow">
@@ -969,6 +1014,7 @@ export default function Workspace() {
             <>
               {conditionAtCursor && (
                 <ConditionDetails
+                  operandSupport={language !== "cpp"}
                   marker={conditionAtCursor.marker}
                   current={conditionAtCursor.current}
                 />
@@ -1059,7 +1105,9 @@ export default function Workspace() {
                   <option value={200}>2.5×</option>
                 </select>
               </div>
+              {traceView === "canvas" && <AnimatedCanvas events={events} selected={selected} source={run?.source || displaySource} duration={speed} onInspect={setInspected}/>}
               <div
+                hidden={traceView !== "table"}
                 className="table-scroll"
                 ref={tableRef}
                 role="region"

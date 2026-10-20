@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
+import { desktopTokenMatches } from "../../../lib/desktop-auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function proxy(
@@ -13,7 +14,18 @@ async function proxy(
   )
     return Response.json({ error: "Not found" }, { status: 404 });
   const jar = await cookies();
-  let owner = jar.get("codeviz-session")?.value;
+  if (
+    !desktopTokenMatches(
+      process.env.CODEVIZ_DESKTOP_TOKEN,
+      jar.get("codeviz-desktop")?.value,
+    )
+  )
+    return Response.json(
+      { error: "Open this service through the desktop app." },
+      { status: 401 },
+    );
+  let owner =
+    process.env.CODEVIZ_DESKTOP_OWNER || jar.get("codeviz-session")?.value;
   if (!owner || !/^[-\w]{36}$/.test(owner)) {
     owner = randomUUID();
     jar.set("codeviz-session", owner, {

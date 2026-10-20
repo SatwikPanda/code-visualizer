@@ -1666,3 +1666,51 @@ textarea:disabled {
   .canvas-explanation { padding: 12px; }
   .canvas-footer { padding: 0 12px 12px; }
 }
+
+/* Operation explanations stay next to the values they describe. */
+.canvas-operation {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 84px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: #242321;
+}
+.canvas-operation-icon { flex-shrink: 0; color: var(--amber); }
+.canvas-operation-copy { min-width: 0; flex: 1; }
+.canvas-operation h3 { font-size: 14px; font-weight: 550; line-height: 1.4; }
+.canvas-operation p { color: var(--secondary); font-size: 12px; line-height: 1.6; margin: 5px 0 0; max-width: 82ch; overflow-wrap: anywhere; }
+.operation-insert .canvas-operation-icon, .operation-write .canvas-operation-icon { color: var(--success); }
+.operation-remove .canvas-operation-icon { color: var(--error); }
+.canvas-branch { flex-shrink: 0; width: 166px; height: 62px; color: var(--secondary); font: 11px var(--mono); }
+.canvas-change-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; padding: 10px 18px; background: #1d1d1d; border-bottom: 1px solid var(--line); }
+.canvas-change-strip button { display: inline-flex; align-items: center; gap: 8px; min-height: 28px; max-width: 100%; padding: 0; background: none; border: 0; color: var(--amber); font-size: 11px; }
+.canvas-change-strip button:hover { color: var(--text); }
+.canvas-change-strip button > span { color: var(--text); max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+.canvas-change-strip code { max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.canvas-change-strip .canvas-before { color: var(--secondary); }
+.canvas-change-strip small { padding: 2px 5px; background: #342e24; border-radius: 3px; font: 10px var(--mono); }
+.canvas-more-changes { color: var(--secondary); font-size: 11px; }
+.canvas-bars-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 8px; margin-right: 8px; border: 1px solid transparent; border-radius: 4px; background: none; color: var(--secondary); font-size: 11px; }
+.canvas-bars-toggle:hover { color: var(--text); background: var(--raised); }
+.canvas-bars-toggle[aria-pressed="true"] { color: var(--text); border-color: #505050; background: var(--raised); }
+.canvas-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; padding: 0 18px 14px; font-size: 10px; color: var(--secondary); }
+.canvas-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.canvas-legend i { display: inline-block; width: 7px; height: 7px; border-radius: 2px; }
+.legend-read { background: var(--amber); }
+.legend-write { background: var(--success); }
+.legend-remove { background: var(--error); }
+.canvas-bars-note { margin-left: auto; }
+@media (max-width: 900px) {
+  .canvas-operation { padding: 13px 12px; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .canvas-operation h3 { font-size: 13px; }
+  .canvas-operation-copy { flex-basis: calc(100% - 40px); }
+  .canvas-branch { height: 50px; margin-left: 26px; }
+  .canvas-change-strip { padding: 9px 12px; }
+  .canvas-change-strip code { max-width: 93px; }
+  .canvas-change-strip button { font-size: 10px; gap: 6px; }
+  .canvas-legend { padding: 0 12px 12px; gap: 8px 13px; }
+  .canvas-bars-note { margin-left: 0; }
+  .canvas-tools { flex-wrap: wrap; }
+}

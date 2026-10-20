@@ -1,162 +1,35 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Minus, Plus, Maximize2, RotateCcw, MoveUpRight } from "lucide-react";
-import type {
-  Binding,
-  TraceEvent,
+import {
+  Minus,
+  Plus,
+  Maximize2,
+  RotateCcw,
+  MoveUpRight,
+  ArrowRight,
+  ArrowLeftRight,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  GitBranch,
+  MousePointer2,
+  RefreshCw,
+  BarChart3,
+  CircleDot,
+  CornerDownLeft,
+} from "lucide-react";
+import { drawScene } from "./canvas-renderer";
+import { changePreview } from "../../../../packages/trace-model/src/transition";
+import {
+  formatValue,
+  type Binding,
+  type TraceEvent,
 } from "../../../../packages/contracts/src/index";
 import {
   buildScene,
+  previousObservation,
   type Scene,
-  type SceneNode,
 } from "../../../../packages/trace-model/src/scene";
 
-const colors = {
-  surface: "#1b1b1b",
-  box: "#252525",
-  line: "#555555",
-  text: "#ececec",
-  muted: "#a7a7a7",
-  amber: "#e5bd82",
-  green: "#8ed6ac",
-};
-function draw(
-  ctx: CanvasRenderingContext2D,
-  scene: Scene,
-  previous: Scene | undefined,
-  progress: number,
-) {
-  ctx.clearRect(0, 0, scene.width, scene.height);
-  const old = new Map(previous?.nodes.map((n) => [n.key, n]));
-  const oldEdges = new Map(previous?.edges.map((edge) => [edge.key, edge]));
-  const ease = 1 - Math.pow(1 - progress, 4);
-  const current = new Set(scene.nodes.map((n) => n.key));
-  function node(n: SceneNode, opacity = 1) {
-    ctx.globalAlpha = opacity;
-    const p = old.get(n.key),
-      ease = 1 - Math.pow(1 - progress, 4);
-    const x = p ? p.x + (n.x - p.x) * ease : n.x,
-      y = p ? p.y + (n.y - p.y) * ease : n.y;
-    ctx.font = '12px Consolas, "Cascadia Code", monospace';
-    ctx.textBaseline = "middle";
-    if (n.role === "cell" || n.role === "scalar") {
-      ctx.fillStyle = colors.box;
-      ctx.strokeStyle = n.changed ? colors.amber : colors.line;
-      ctx.lineWidth = n.changed ? 1.5 : 1;
-      ctx.setLineDash(n.label === "spare" ? [3, 4] : []);
-      ctx.beginPath();
-      ctx.roundRect(x, y, n.w, n.h, 5);
-      ctx.fill();
-      ctx.stroke();
-      ctx.setLineDash([]);
-      if (n.role === "cell" && n.label) {
-        ctx.fillStyle = colors.muted;
-        ctx.textAlign = "center";
-        ctx.font = "10px Consolas, monospace";
-        ctx.fillText(n.label, x + n.w / 2, y + n.h + 16);
-      }
-      if (n.role === "scalar") {
-        ctx.textAlign = "left";
-        ctx.fillStyle = colors.muted;
-        ctx.font = "11px Segoe UI, sans-serif";
-        ctx.fillText(n.label || "", x + 14, y + 20);
-        ctx.fillStyle = n.changed ? colors.amber : colors.text;
-        ctx.font = "15px Consolas, monospace";
-        ctx.fillText(n.text, x + 14, y + 49);
-        if (n.changed) {
-          ctx.beginPath();
-          ctx.arc(x + n.w - 13, y + 18, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    } else if (n.role === "label") {
-      ctx.textAlign = "left";
-      ctx.fillStyle = colors.text;
-      ctx.font = "13px Consolas, monospace";
-      ctx.fillText(n.text, x, y + 12);
-      if (n.label) {
-        ctx.font = "11px Segoe UI, sans-serif";
-        ctx.fillStyle = colors.muted;
-        ctx.fillText(n.label, x, y + 32);
-      }
-    } else if (n.role === "pointer") {
-      ctx.fillStyle = colors.amber;
-      ctx.textAlign = "left";
-      ctx.font = "11px Consolas, monospace";
-      ctx.fillText(n.text, x, y + 12);
-    } else {
-      ctx.textAlign = "center";
-      ctx.fillStyle = n.changed ? colors.amber : colors.text;
-      ctx.font = "15px Consolas, monospace";
-      ctx.fillText(n.text, x + n.w / 2, y + n.h / 2);
-    }
-  }
-  if (previous)
-    for (const n of previous.nodes)
-      if (!current.has(n.key) && progress < 1) node(n, 1 - progress);
-  // Boxes precede their moving value tokens, so crossing tokens stay legible.
-  for (const n of [
-    ...scene.nodes.filter((n) => n.role !== "value"),
-    ...scene.nodes.filter((n) => n.role === "value"),
-  ])
-    node(n, old.has(n.key) || !previous ? 1 : Math.min(1, progress * 3));
-  ctx.globalAlpha = 1;
-  for (const edge of scene.edges) {
-    const prior = oldEdges.get(edge.key);
-    const x = prior ? prior.to.x + (edge.to.x - prior.to.x) * ease : edge.to.x,
-      y = prior ? prior.to.y + (edge.to.y - prior.to.y) * ease : edge.to.y,
-      from = prior
-        ? {
-            x: prior.from.x + (edge.from.x - prior.from.x) * ease,
-            y: prior.from.y + (edge.from.y - prior.from.y) * ease,
-          }
-        : edge.from;
-    ctx.strokeStyle = colors.amber;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    if (edge.transfer) ctx.bezierCurveTo(from.x, from.y - 50, x - 75, y, x, y);
-    else ctx.lineTo(x, y);
-    ctx.stroke();
-    const angle = Math.atan2(
-      y - (edge.transfer ? y : from.y),
-      x - (edge.transfer ? x - 75 : from.x),
-    );
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x - 7 * Math.cos(angle - 0.45), y - 7 * Math.sin(angle - 0.45));
-    ctx.moveTo(x, y);
-    ctx.lineTo(x - 7 * Math.cos(angle + 0.45), y - 7 * Math.sin(angle + 0.45));
-    ctx.stroke();
-    if (edge.transfer) {
-      ctx.fillStyle = colors.amber;
-      ctx.font = "10px Segoe UI, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(
-        edge.label || "",
-        (from.x + x) / 2,
-        Math.min(from.y, y) - 22,
-      );
-      if (progress < 1) {
-        const t = progress,
-          u = 1 - t;
-        const px =
-          u * u * u * from.x +
-          3 * u * u * t * from.x +
-          3 * u * t * t * (x - 75) +
-          t * t * t * x;
-        const py =
-          u * u * u * from.y +
-          3 * u * u * t * (from.y - 50) +
-          3 * u * t * t * y +
-          t * t * t * y;
-        ctx.beginPath();
-        ctx.arc(px, py, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-  }
-}
 export default function AnimatedCanvas({
   events,
   selected,
@@ -175,10 +48,11 @@ export default function AnimatedCanvas({
     last = useRef<Scene | undefined>(undefined);
   const [width, setWidth] = useState(1000),
     [zoom, setZoom] = useState<number | null>(null),
-    [replay, setReplay] = useState(0);
+    [replay, setReplay] = useState(0),
+    [bars, setBars] = useState(true);
   const scene = useMemo(
-    () => buildScene(events, selected, source, width < 720 ? width : 1040),
-    [events, selected, source, width],
+    () => buildScene(events, selected, source, width, { bars }),
+    [events, selected, source, width, bars],
   );
   const scale = zoom ?? Math.min(1, width / scene.width);
   useEffect(() => {
@@ -197,7 +71,10 @@ export default function AnimatedCanvas({
     el.height = scene.height * scale * ratio;
     ctx.scale(scale * ratio, scale * ratio);
     const previous =
-      last.current?.frameId === scene.frameId ? last.current : undefined;
+      last.current?.frameId === scene.frameId &&
+      last.current?.seq === previousObservation(events, selected)?.seq
+        ? last.current
+        : undefined;
     last.current = scene;
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -209,10 +86,11 @@ export default function AnimatedCanvas({
         reduced || !previous
           ? 1
           : Math.min(1, (now - start) / Math.min(700, duration * 0.85));
-      draw(ctx, scene, previous, p);
+      drawScene(ctx, scene, previous, p);
+      el.dataset.animationState = p < 1 ? "running" : "settled";
       if (p < 1) request = requestAnimationFrame(render);
     };
-    request = requestAnimationFrame(render);
+    render(performance.now());
     return () => cancelAnimationFrame(request);
   }, [scene, scale, duration, replay]);
   function inspect(x: number, y: number) {
@@ -222,6 +100,35 @@ export default function AnimatedCanvas({
     if (hit) onInspect(hit.binding);
   }
   const line = source.split("\n")[(selected?.line || 1) - 1]?.trim();
+  const operation = scene.operation;
+  const OperationIcon =
+    operation.kind === "read"
+      ? ArrowDownToLine
+      : operation.kind === "write"
+        ? ArrowUpFromLine
+        : operation.kind === "swap" || operation.kind === "reorder"
+          ? ArrowLeftRight
+          : operation.kind === "insert"
+            ? Plus
+            : operation.kind === "remove"
+              ? Minus
+              : operation.kind === "condition"
+                ? GitBranch
+                : operation.kind === "iterate"
+                  ? MousePointer2
+                  : operation.kind === "return"
+                    ? CornerDownLeft
+                    : operation.kind === "update"
+                      ? RefreshCw
+                      : CircleDot;
+  const hasNumeric = selected?.variables?.some(
+    (v) =>
+      v.value.kind === "array" &&
+      !["stack", "queue", "map"].includes(v.value.container || "") &&
+      v.value.items?.some((item) =>
+        ["integer", "float", "array"].includes(item.kind),
+      ),
+  );
   return (
     <div className="animation-view">
       <div className="canvas-toolbar">
@@ -236,6 +143,17 @@ export default function AnimatedCanvas({
           {!scene.frames.length && <span>Current invocation</span>}
         </div>
         <div className="canvas-tools">
+          {hasNumeric && (
+            <button
+              className="canvas-bars-toggle"
+              aria-label="Show numeric values as bars"
+              aria-pressed={bars}
+              onClick={() => setBars((v) => !v)}
+            >
+              <BarChart3 size={14} />
+              <span>Value bars</span>
+            </button>
+          )}
           <button
             className="icon-button"
             aria-label="Zoom out"
@@ -270,7 +188,9 @@ export default function AnimatedCanvas({
                   e.frameId === selected?.frameId &&
                   e.seq < (selected?.seq || 0),
               );
-              last.current = buildScene(events, prev, source, scene.width);
+              last.current = buildScene(events, prev, source, scene.width, {
+                bars,
+              });
               setReplay((r) => r + 1);
             }}
           >
@@ -278,6 +198,91 @@ export default function AnimatedCanvas({
           </button>
         </div>
       </div>
+      <section
+        className={`canvas-operation operation-${operation.kind}`}
+        aria-label="Step explanation"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <OperationIcon size={22} className="canvas-operation-icon" />
+        <div className="canvas-operation-copy">
+          <h3>{operation.title}</h3>
+          <p>{operation.description}</p>
+        </div>
+        {operation.condition !== undefined && (
+          <svg
+            className="canvas-branch"
+            viewBox="0 0 166 62"
+            role="img"
+            aria-label={`Recorded ${operation.condition ? "true" : "false"} branch`}
+          >
+            <path
+              d="M10 31 27 14 44 31 27 48Z"
+              fill="none"
+              stroke="currentColor"
+            />
+            <path
+              d="M44 31H64V12H112m-5-4 5 4-5 4"
+              fill="none"
+              stroke={operation.condition ? "var(--success)" : "var(--line)"}
+              strokeWidth="2"
+            />
+            <path
+              d="M64 31V50H112m-5-4 5 4-5 4"
+              fill="none"
+              stroke={!operation.condition ? "var(--error)" : "var(--line)"}
+              strokeWidth="2"
+            />
+            <text
+              x="120"
+              y="16"
+              fill={operation.condition ? "var(--success)" : "var(--secondary)"}
+            >
+              true
+            </text>
+            <text
+              x="120"
+              y="54"
+              fill={!operation.condition ? "var(--error)" : "var(--secondary)"}
+            >
+              false
+            </text>
+          </svg>
+        )}
+      </section>
+      {!!operation.changes.length && (
+        <div
+          className="canvas-change-strip"
+          aria-label="Before and after values"
+        >
+          {operation.changes.slice(0, 4).map((change) => {
+            const preview = changePreview(change);
+            return (
+              <button
+                key={change.id}
+                title={`${change.name}: ${change.before ? formatValue(change.before) : "created"} → ${formatValue(change.after)}`}
+                onClick={() => {
+                  const binding = selected?.variables?.find(
+                    (v) => v.id === change.id,
+                  );
+                  if (binding) onInspect(binding);
+                }}
+              >
+                <span>{preview.label}</span>
+                <code className="canvas-before">{preview.before}</code>
+                <ArrowRight size={12} />
+                <code>{preview.after}</code>
+                {change.delta && <small>{change.delta}</small>}
+              </button>
+            );
+          })}
+          {operation.changes.length > 4 && (
+            <span className="canvas-more-changes">
+              +{operation.changes.length - 4} more
+            </span>
+          )}
+        </div>
+      )}
       <div
         className="canvas-scroll"
         ref={container}
@@ -297,6 +302,9 @@ export default function AnimatedCanvas({
                 n.role === "pointer",
             )
             .map((n) => `${n.label || n.text}: ${n.text}`)
+            .join(". ")}. ${scene.edges
+            .filter((edge) => edge.transfer)
+            .map((edge) => `${edge.label}: ${edge.value}`)
             .join(". ")}`}
           onClick={(e) => {
             const bounds = e.currentTarget.getBoundingClientRect();
@@ -307,7 +315,7 @@ export default function AnimatedCanvas({
           }}
         />
       </div>
-      <div className="canvas-explanation" aria-live="polite" aria-atomic="true">
+      <div className="canvas-explanation">
         <div>
           <span className="change-dot" />
           <span>{scene.explanation.slice(0, 3).join(" · ")}</span>
@@ -320,7 +328,26 @@ export default function AnimatedCanvas({
         <span>
           Recorded states · motion illustrates changes between snapshots
         </span>
-        <span>Amber marks a change · click a value to inspect</span>
+        <span>Click a value to inspect its recorded contents</span>
+      </div>
+      <div className="canvas-legend" aria-label="Canvas color key">
+        <span>
+          <i className="legend-read" />
+          Read / pointer
+        </span>
+        <span>
+          <i className="legend-write" />
+          New / write
+        </span>
+        <span>
+          <i className="legend-remove" />
+          Removed
+        </span>
+        {hasNumeric && bars && (
+          <span className="canvas-bars-note">
+            Bar height compares magnitudes; labels keep exact values.
+          </span>
+        )}
       </div>
       <details className="canvas-accessible-values">
         <summary>

@@ -4,6 +4,11 @@ import {
   type TraceEvent,
   type TraceValue,
 } from "../../contracts/src/index";
+import {
+  describeTransition,
+  numericDelta,
+  type CanvasOperation,
+} from "./transition";
 
 export interface SceneNode {
   key: string;
@@ -17,6 +22,14 @@ export interface SceneNode {
   changed?: boolean;
   binding: Binding;
   detail?: string;
+  focus?: "read" | "write" | "pointer";
+  added?: boolean;
+  numeric?: { ratio: number; negative: boolean; signed?: boolean };
+  oldText?: string;
+  delta?: string;
+  mapKey?: string;
+  mapValue?: string;
+  sideLabel?: boolean;
 }
 export interface SceneEdge {
   key: string;
@@ -24,8 +37,11 @@ export interface SceneEdge {
   to: { x: number; y: number };
   label?: string;
   transfer?: boolean;
+  value?: string;
+  direction?: "read" | "write";
 }
 export interface Scene {
+  seq?: number;
   frameId?: string;
   nodes: SceneNode[];
   edges: SceneEdge[];
@@ -33,6 +49,18 @@ export interface Scene {
   height: number;
   explanation: string[];
   frames: string[];
+  operation: CanvasOperation;
+  regions: {
+    key: string;
+    kind: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    size: number;
+    capacity?: number;
+    oldSize?: number;
+  }[];
 }
 const same = (a?: TraceValue, b?: TraceValue) =>
   JSON.stringify(a) === JSON.stringify(b);
@@ -60,14 +88,17 @@ export function buildScene(
   selected: TraceEvent | undefined,
   source: string,
   viewportWidth = 1040,
+  options: { bars?: boolean } = {},
 ): Scene {
   const width = Math.max(340, Math.min(1040, Math.round(viewportWidth))),
-    compact = width < 720;
+    compact = width < 1040;
   const nodes: SceneNode[] = [],
     edges: SceneEdge[] = [],
     explanation: string[] = [];
   const vars = (selected?.variables || []).filter((v) => v.name !== "this");
   const previous = previousObservation(events, selected);
+  const operation = describeTransition(previous, selected, source);
+  const regions: Scene["regions"] = [];
   const before = new Map(previous?.variables?.map((v) => [v.id, v.value]));
   const targets = new Map<
     string,
@@ -77,10 +108,11 @@ export function buildScene(
       cells: { x: number; y: number }[];
       end: { x: number; y: number };
       binding: Binding;
+      cellHeight: number;
     }
   >();
   const scalarPositions = new Map<string, { x: number; y: number }>();
-  let y = 65;
+  let y = 38;
   const sequences = vars.filter(
     (v) => v.value.kind === "array" || v.value.kind === "string",
   );
@@ -91,6 +123,7 @@ export function buildScene(
   const scalars = vars.filter(
     (v) => !sequences.includes(v) && v.value.kind !== "iterator",
   );
+  const variablesBelow = compact || scalars.length > 4;
   function sequence(
     binding: Binding,
     value: TraceValue,
@@ -152,7 +185,23 @@ export function buildScene(
         ? 1
         : Math.max(1, Math.floor((compact ? width - 80 : 690) / (cellW + gap)));
     const shown = items.slice(0, 64),
-      rowHeight = 86;
+      numeric =
+        options.bars !== false &&
+        !isStack &&
+        value.container !== "queue" &&
+        !isMap &&
+        shown.length > 0 &&
+        shown.every(
+          (item) =>
+            ["integer", "float"].includes(item.kind) &&
+            Number.isFinite(Number(item.text)),
+        ),
+      maxMagnitude = Math.max(
+        1,
+        ...shown.map((item) => Math.abs(Number(item.text) || 0)),
+      ),
+      cellH = numeric ? 108 : isMap ? 68 : 48,
+      rowHeight = cellH + 38;
     const pointerCounts = new Map<string, number>();
     for (const v of vars) {
       const p = v.value.pointsTo;
@@ -181,7 +230,7 @@ export function buildScene(
       w: 690,
       h: 30,
       text: name,
-      label: `${kind} · size ${length}${capacity}`,
+      label: `${kind}${isMap ? " · key → value" : ""} · size ${length}${capacity}`,
       role: "label",
       binding,
       changed,
@@ -190,7 +239,7 @@ export function buildScene(
     shown.forEach((item, i) => {
       const x = 50 + (i % columns) * (cellW + gap),
         cy = startY + Math.floor(i / columns) * (isStack ? 67 : rowHeight);
-      cells.push({ x: x + cellW / 2, y: cy + 24 });
+      cells.push({ x: x + cellW / 2, y: cy + cellH / 2 });
       const v =
         isMap && item.fields
           ? `${formatValue(item.fields.key)} → ${formatValue(item.fields.value)}`
@@ -204,12 +253,40 @@ export function buildScene(
           : old?.kind === "string"
             ? Array.from(String(old.value))[i] !== item.value
             : changed;
+      const access = operation.accesses.find(
+        (a) => a.owner === name && a.index === i,
+      );
+      const focus =
+        access?.direction ||
+        (operation.kind === "write" &&
+        operation.changes.some(
+          (c) => c.id === binding.id && c.indices.includes(i),
+        )
+          ? "write"
+          : undefined);
+      const oldLength =
+        old?.length ??
+        (old?.kind === "string"
+          ? Array.from(String(old.value)).length
+          : old?.items?.length) ??
+        0;
+      const added =
+        !old ||
+        (length > oldLength &&
+          occurrence >= (old.items || []).filter((x) => same(x, item)).length);
+      const magnitude = numeric
+        ? {
+            ratio: Math.abs(Number(item.text)) / maxMagnitude,
+            negative: Number(item.text) < 0,
+            signed: shown.some((item) => Number(item.text) < 0),
+          }
+        : undefined;
       nodes.push({
         key: rootKey + ":box:" + i,
         x,
         y: cy,
         w: cellW,
-        h: 48,
+        h: cellH,
         text: "",
         label: isStack
           ? i === 0
@@ -227,24 +304,34 @@ export function buildScene(
         role: "cell",
         binding,
         changed: itemChanged,
+        focus,
+        sideLabel: isStack,
+        added,
+        numeric: magnitude,
       });
       nodes.push({
         key: rootKey + ":token:" + hash + ":" + occurrence,
         x,
         y: cy,
         w: cellW,
-        h: 48,
+        h: cellH,
         text: short(v, isMap ? 20 : 7),
         detail: `${name}[${i}] = ${v}`,
         role: "value",
         binding,
         changed: itemChanged,
+        focus,
+        added,
+        numeric: magnitude,
+        mapKey: isMap && item.fields ? formatValue(item.fields.key) : undefined,
+        mapValue:
+          isMap && item.fields ? formatValue(item.fields.value) : undefined,
       });
       if (linked && i > 0 && i % columns !== 0)
         edges.push({
           key: rootKey + ":link" + i,
-          from: { x: x - gap, y: cy + 24 },
-          to: { x: x - 3, y: cy + 24 },
+          from: { x: x - gap, y: cy + cellH / 2 },
+          to: { x: x - 3, y: cy + cellH / 2 },
         });
     });
     const slots = Math.min(
@@ -257,7 +344,7 @@ export function buildScene(
         x: 50 + (shown.length + i) * (cellW + gap),
         y: startY,
         w: cellW,
-        h: 48,
+        h: cellH,
         text: "",
         label: "spare",
         role: "cell",
@@ -269,7 +356,7 @@ export function buildScene(
       y:
         startY +
         Math.floor(shown.length / columns) * (isStack ? 67 : rowHeight) +
-        24,
+        cellH / 2,
     };
     targets.set(value.refId || binding.id, {
       x: 50,
@@ -277,10 +364,30 @@ export function buildScene(
       cells,
       end,
       binding,
+      cellHeight: cellH,
     });
-    targets.set(name, { x: 50, y: startY, cells, end, binding });
+    targets.set(name, {
+      x: 50,
+      y: startY,
+      cells,
+      end,
+      binding,
+      cellHeight: cellH,
+    });
     const rows = Math.max(1, Math.ceil(Math.max(1, shown.length) / columns));
     y = startY + rows * (isStack ? 67 : rowHeight) + 24;
+    regions.push({
+      key: rootKey,
+      kind,
+      x: 42,
+      y: startY - 8,
+      w:
+        Math.min(columns, Math.max(1, shown.length)) * (cellW + gap) - gap + 16,
+      h: (rows - 1) * (isStack ? 67 : rowHeight) + cellH + 16,
+      size: length,
+      capacity: value.capacity,
+      oldSize: old?.length ?? old?.items?.length,
+    });
     if (!shown.length) {
       nodes.push({
         key: rootKey + ":empty",
@@ -308,15 +415,14 @@ export function buildScene(
     }
   }
   for (const v of sequences) sequence(v, v.value, v.name, v.id);
-  const scalarBase = compact && sequences.length ? y + 12 : 65;
+  const scalarBase = variablesBelow && sequences.length ? y + 12 : 38;
   let scalarY = scalarBase;
   scalars.forEach((v, i) => {
-    const scalarCols = compact
-      ? Math.max(1, Math.floor((width - 80) / 230))
-      : 4;
-    const x = sequences.length && !compact ? 790 : 50 + (i % scalarCols) * 230,
+    const scalarCols = Math.max(1, Math.floor((width - 80) / 230));
+    const x =
+        sequences.length && !variablesBelow ? 790 : 50 + (i % scalarCols) * 230,
       sy =
-        sequences.length && !compact
+        sequences.length && !variablesBelow
           ? scalarY
           : scalarBase + Math.floor(i / scalarCols) * 110;
     const old = before.get(v.id),
@@ -331,15 +437,18 @@ export function buildScene(
       x,
       y: sy,
       w: 210,
-      h: 78,
+      h: 88,
       text: short(display, 25),
       label: v.name,
       role: "scalar",
       binding: v,
       changed,
+      oldText:
+        old && !same(old, v.value) ? short(formatValue(old), 18) : undefined,
+      delta: numericDelta(old, v.value),
       detail: `${v.name}: ${display}${v.value.reason ? " · " + v.value.reason : ""}`,
     });
-    scalarPositions.set(v.name, { x: x + 105, y: sy + 45 });
+    scalarPositions.set(v.name, { x: x + 105, y: sy + 54 });
     if (changed)
       explanation.push(
         old
@@ -380,7 +489,7 @@ export function buildScene(
           ? 50
           : 790,
       py = pos
-        ? pos.y - 65 - lane * 22
+        ? pos.y - (target?.cellHeight || 48) / 2 - 42 - lane * 22
         : Math.max(scalarY, 65) + pointerRow++ * 50;
     nodes.push({
       key: binding.id + ":pointer",
@@ -400,8 +509,17 @@ export function buildScene(
           x: lane ? Math.min(width - 24, px + 125 + lane * 6) : pos.x,
           y: py + 25,
         },
-        to: { x: pos.x, y: pos.y - 27 },
+        to: { x: pos.x, y: pos.y - (target?.cellHeight || 48) / 2 - 4 },
       });
+    if (pos && !end)
+      for (const node of nodes)
+        if (
+          (node.role === "cell" || node.role === "value") &&
+          node.binding.id === target?.binding.id &&
+          node.x + node.w / 2 === pos.x &&
+          node.y + node.h / 2 === pos.y
+        )
+          node.focus ||= "pointer";
   };
   for (const v of vars) {
     if (v.value.kind === "iterator" && v.value.pointsTo) {
@@ -454,56 +572,22 @@ export function buildScene(
         `${s.name} values change · highlighted cells show the update`,
       );
   }
-  const sourceLine = source.split("\n")[(selected?.line || 1) - 1] || "";
-  const destination = sourceLine.match(
-    /\b([A-Za-z_]\w*)\s*(?:\+=|-=|=(?!=))/,
-  )?.[1];
-  if (
-    destination &&
-    scalarPositions.has(destination) &&
-    selected?.phase !== "before-instruction"
-  ) {
-    for (const v of vars.filter((x) => x.value.kind === "iterator")) {
-      const p = v.value.pointsTo,
-        target = p && targets.get(p.refId);
-      if (
-        p &&
-        target &&
-        !p.end &&
-        !p.invalidated &&
-        !p.unavailable &&
-        new RegExp(`\\*\\s*${escape(v.name)}\\b`).test(sourceLine)
-      ) {
-        const from = target.cells[p.index ?? -1];
-        if (from)
-          edges.push({
-            key: "transfer:" + v.id,
-            from,
-            to: scalarPositions.get(destination)!,
-            label: `read → ${destination}`,
-            transfer: true,
-          });
-      }
-    }
-    for (const s of sequences) {
-      const access = sourceLine.match(
-        new RegExp(`\\b${escape(s.name)}\\s*\\[\\s*(\\w+)\\s*\\]`),
-      );
-      if (access) {
-        const index = /^\d+$/.test(access[1])
-          ? Number(access[1])
-          : Number(vars.find((v) => v.name === access[1])?.value.text);
-        const from = targets.get(s.name)?.cells[index];
-        if (from)
-          edges.push({
-            key: "transfer:" + s.id,
-            from,
-            to: scalarPositions.get(destination)!,
-            label: `read → ${destination}`,
-            transfer: true,
-          });
-      }
-    }
+  for (const access of operation.accesses) {
+    const cell = targets.get(access.owner)?.cells[access.index],
+      scalar =
+        access.destinationIndex !== undefined
+          ? targets.get(access.destination)?.cells[access.destinationIndex]
+          : scalarPositions.get(access.destination);
+    if (cell && scalar)
+      edges.push({
+        key: `transfer:${access.owner}:${access.destination}:${access.direction}`,
+        from: access.direction === "read" ? cell : scalar,
+        to: access.direction === "read" ? scalar : cell,
+        label: `${access.direction} → ${access.direction === "read" ? access.destination : access.owner + "[" + access.index + "]"}`,
+        transfer: true,
+        value: formatValue(access.value),
+        direction: access.direction,
+      });
   }
   const active = new Map<string, string>();
   for (const e of events) {
@@ -515,6 +599,7 @@ export function buildScene(
   }
   const frames = [...active.values()];
   return {
+    seq: selected?.seq,
     frameId: selected?.frameId,
     nodes,
     edges,
@@ -530,5 +615,7 @@ export function buildScene(
               : "Values are unchanged at this observation",
         ],
     frames,
+    operation,
+    regions,
   };
 }

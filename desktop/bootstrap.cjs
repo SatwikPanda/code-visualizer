@@ -8,6 +8,7 @@ const {
   writeFileSync,
   createWriteStream,
   existsSync,
+  rmSync,
 } = require("node:fs");
 const path = require("node:path");
 const readline = require("node:readline");
@@ -59,6 +60,13 @@ async function availablePort() {
   });
 }
 async function start() {
+  // Generated Next page responses can survive a desktop upgrade beside the
+  // bundled files. Always start from this build's immutable prerendered pages.
+  const serverDirectory = path.resolve(root, "web/apps/web/.next/server");
+  const pageCache = path.resolve(serverDirectory, "route-cache");
+  if (!pageCache.startsWith(serverDirectory + path.sep))
+    throw new Error("Invalid generated page-cache path");
+  rmSync(pageCache, { recursive: true, force: true });
   const sessionFile = path.join(data, "desktop-session.json");
   let owner;
   if (existsSync(sessionFile)) {

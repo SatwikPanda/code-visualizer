@@ -14,6 +14,9 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const { version } = JSON.parse(
+  await readFile(path.join(root, "package.json"), "utf8"),
+);
 const payload = path.join(root, "src-tauri/resources/payload");
 const cache = path.join(root, ".data/desktop-cache");
 function run(executable, args, env = {}) {
@@ -200,7 +203,10 @@ await writeFile(
   path.join(payload, "runtime-manifest.json"),
   JSON.stringify(
     {
-      appVersion: "0.1.0",
+      appVersion: version,
+      languages: ["java", "cpp"],
+      cppToolchain: "external-clang-c++20",
+      visualizations: ["step-table", "animated-canvas"],
       target: "x86_64-pc-windows-msvc",
       node: process.versions.node,
       java: javaRelease.match(/JAVA_VERSION="([^"]+)"/)?.[1],

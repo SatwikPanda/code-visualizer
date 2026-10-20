@@ -190,7 +190,10 @@ export default function Workspace() {
   );
   const virtualizer = useVirtualizer({
     count: observations.length,
-    getScrollElement: () => tableRef.current,
+    // A hidden mobile panel can reset its DOM scroll position while the
+    // virtualizer still holds the old offset. Reattach when it becomes visible.
+    getScrollElement: () =>
+      tableRef.current?.clientHeight ? tableRef.current : null,
     estimateSize: () => 39,
     overscan: 12,
     scrollPaddingStart: 36,

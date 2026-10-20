@@ -1,9 +1,22 @@
 import { spawnSync } from "node:child_process";
-import { mkdir, cp, readdir, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdir, cp, readFile, writeFile, rm } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const { version } = JSON.parse(
+  await readFile(path.join(root, "package.json"), "utf8"),
+);
+const target = path.join(
+  root,
+  "src-tauri/target/x86_64-pc-windows-msvc/release",
+);
+const stagedPayload = path.resolve(target, "payload");
+if (
+  !stagedPayload.startsWith(path.resolve(root, "src-tauri/target") + path.sep)
+)
+  throw new Error("Invalid staged desktop payload path");
+await rm(stagedPayload, { recursive: true, force: true });
 const cli = path.join(root, "node_modules/@tauri-apps/cli/tauri.js");
 const result = spawnSync(
   process.execPath,
@@ -18,10 +31,6 @@ if (!portable.startsWith(root + path.sep) || portable === root)
   throw new Error("Invalid release path");
 await rm(portable, { recursive: true, force: true });
 await mkdir(portable, { recursive: true });
-const target = path.join(
-  root,
-  "src-tauri/target/x86_64-pc-windows-msvc/release",
-);
 await cp(
   path.join(target, "CodeVisualizer.exe"),
   path.join(portable, "CodeVisualizer.exe"),
@@ -31,20 +40,19 @@ await cp(
   path.join(portable, "payload"),
   { recursive: true, dereference: true },
 );
-const installers = (await readdir(path.join(target, "bundle/nsis"))).filter(
-  (file) => file.endsWith("-setup.exe"),
-);
-if (installers.length !== 1)
-  throw new Error("Expected one NSIS release installer");
+const installer = `Code Visualizer_${version}_x64-setup.exe`;
 await cp(
-  path.join(target, "bundle/nsis", installers[0]),
-  path.join(output, installers[0]),
+  path.join(target, "bundle/nsis", installer),
+  path.join(output, installer),
 );
 await writeFile(
   path.join(portable, "README.txt"),
-  "Code Visualizer 0.1.0 — Windows x64\r\nRun CodeVisualizer.exe. Keep the payload folder next to it. Node.js and Java are bundled; WebView2 Runtime is required (the setup installer handles it). Saved executions are in %LOCALAPPDATA%\\dev.codevisualizer.desktop. Java executes locally: run code you trust.\r\n",
+  `Code Visualizer ${version} — Windows x64\r\nRun CodeVisualizer.exe. Keep the payload folder next to it. Includes Java and C++20 tracing, the step table, and animated canvas. Node.js and Java are bundled. C++ requires an installed Clang C++20 toolchain with standard-library headers on PATH (or CODEVIZ_CLANGXX); its bin directory must be on PATH for runtime DLLs. WebView2 Runtime is required (the setup installer handles it). Saved executions are in %LOCALAPPDATA%\\dev.codevisualizer.desktop. Programs execute locally: run code you trust.\r\n`,
 );
-const zip = path.join(output, "CodeVisualizer_0.1.0_windows-x64_portable.zip");
+const zip = path.join(
+  output,
+  `CodeVisualizer_${version}_windows-x64_portable.zip`,
+);
 // Fixed script body; file paths travel through environment variables, not shell interpolation.
 const archive = spawnSync(
   "powershell.exe",
@@ -65,7 +73,7 @@ const archive = spawnSync(
   },
 );
 if (archive.status !== 0) throw new Error("Unable to create portable ZIP");
-const files = [installers[0], path.basename(zip)];
+const files = [installer, path.basename(zip)];
 const hashes = await Promise.all(
   files.map(
     async (name) =>
@@ -76,5 +84,5 @@ const hashes = await Promise.all(
 );
 await writeFile(path.join(output, "SHA256SUMS.txt"), hashes.join("\n") + "\n");
 console.log(
-  `Release installer: ${path.join(output, installers[0])}\nPortable ZIP: ${zip}`,
+  `Release installer: ${path.join(output, installer)}\nPortable ZIP: ${zip}`,
 );

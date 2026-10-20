@@ -1,7 +1,7 @@
 [package]
 name = "code-visualizer"
-version = "0.1.0"
-description = "Record and explore real Java execution"
+version = "0.2.0"
+description = "Explore Java and C++ execution with animated data visualization"
 authors = ["Code Visualizer"]
 edition = "2021"
 rust-version = "1.88"
